@@ -1,6 +1,30 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'mpower'
+
+    publishedGroupId = 'com.abakhi.android.mpower'
+    libraryName = 'MPower'
+    artifact = 'mpower'
+
+    libraryDescription = 'Android MPowerPayments API wrapper'
+
+    siteUrl = 'https://github.com/abakhi/mpower-android'
+    gitUrl = 'https://github.com/abakhi/mpower-android.git'
+
+    libraryVersion = '1.0.0-beta1'
+
+    developerId = 'savekirk'
+    developerName = 'Kirk Saviour Agbenyegah'
+    developerEmail = 'savekirk@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
@@ -9,7 +33,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0-beta1"
     }
     buildTypes {
         release {
@@ -46,3 +70,6 @@ buildscript {
 repositories {
     mavenCentral()
 }
+
+apply from: 'https://raw.githubusercontent.com/abakhi/mpower-android/master/jcenter/bintrayv1.gradle'
+apply from: 'https://raw.githubusercontent.com/abakhi/mpower-android/master/jcenter/installv1.gradle'
