@@ -8,8 +8,7 @@ import com.github.kittinunf.result.Result
 
 internal class MpowerClient {
 
-    fun <T : Any> post(url: String, body: String, response: Class<T>) : T? {
-        var parsedResult: T? = null
+    fun <T : Any> post(url: String, body: String, response: Class<T>, callback: ClientCallback<T>)  {
 
         url.httpPost().body(body).responseObject(Deserializer(response)) { req, res, result ->
             when(result) {
@@ -18,12 +17,11 @@ internal class MpowerClient {
                 }
 
                 is Result.Success -> {
-                    parsedResult = result.value
+                    callback.onResult(result.value)
                 }
             }
         }
 
-        return parsedResult
     }
 
 
@@ -51,7 +49,13 @@ internal class MpowerClient {
 
    class Deserializer<T : Any>(val type: Class<T>) : ResponseDeserializable<T> {
         override fun deserialize(content: String) = Mpower.parseResult(type, content)
-    }
+   }
+
+   interface ClientCallback<T> {
+       fun onResult(result: T)
+   }
+
+
 
 
 }

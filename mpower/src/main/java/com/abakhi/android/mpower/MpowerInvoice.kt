@@ -1,5 +1,6 @@
 package com.abakhi.android.mpower
 
+import android.util.Log
 import kotlin.properties.Delegates
 
 class MpowerInvoice {
@@ -13,10 +14,11 @@ class MpowerInvoice {
     var customData: Map<String, Any>? = null
 
     var totalAmount: Double by Delegates.notNull()
+
     var description: String by Delegates.notNull()
 
 
-    internal fun <T> formatItems(items: T, prefix: String) : MutableMap<String, Any?> {
+    internal fun <T> formatItems(items: T?, prefix: String) : MutableMap<String, Any?> {
         var newList = mutableMapOf<String, Any?>()
         if (items is List<*>) {
             items.mapIndexedNotNull {
@@ -28,7 +30,7 @@ class MpowerInvoice {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun addItems(_items: List<MpowerItem>) {
+    fun addItems(_items: List<MpowerItem>?) {
         items = formatItems(_items, "item") as MutableMap<String, MpowerItem>
     }
 
@@ -47,14 +49,19 @@ class MpowerInvoice {
                 customData
         )
 
+        Log.d("invoice", totalAmount.toString())
+
         val requestData = Mpower.toJson(InvoiceRequest::class.java, invoiceRequest)
 
-        MpowerClient().post(Mpower.checkOutInvoiceUrl, requestData, InvoiceResponse::class.java)?.let {
-            when(it.response_code) {
-                "00" -> callback.onSuccess(it)
-                else -> callback.onError(MpowerError(it))
+        MpowerClient().post(Mpower.checkOutInvoiceUrl, requestData, InvoiceResponse::class.java, object : MpowerClient.ClientCallback<InvoiceResponse> {
+            override fun onResult(result: InvoiceResponse) {
+                when(result.response_code) {
+                    "00" -> callback.onSuccess(result)
+                    else -> callback.onError(MpowerError(result))
+                }
             }
-        }
+
+        })
 
     }
 
@@ -80,12 +87,14 @@ class MpowerInvoice {
         )
         val requestData = Mpower.toJson(OprInvoiceRequest::class.java, oprRequest)
 
-        MpowerClient().post(Mpower.oprUrl, requestData, InvoiceResponse::class.java)?.let {
-            when(it.response_code) {
-                "00" -> callback.onSuccess(it)
-                else -> callback.onError(MpowerError(it))
+        MpowerClient().post(Mpower.oprUrl, requestData, InvoiceResponse::class.java, object : MpowerClient.ClientCallback<InvoiceResponse> {
+            override fun onResult(result: InvoiceResponse) {
+                when(result.response_code) {
+                    "00" -> callback.onSuccess(result)
+                    else -> callback.onError(MpowerError(result))
+                }
             }
-        }
+        })
     }
 
     fun oprCharge(oprToken: String, confirmToken: String, callback: OprChargeCallback) {
@@ -94,12 +103,15 @@ class MpowerInvoice {
                 mapOf(Pair("token", oprToken), Pair("confirm_token", confirmToken))
         )
 
-        MpowerClient().post(Mpower.oprChargeUrl, chargeRequest, OprChargeResponse::class.java)?.let {
-            when(it.response_code) {
-                "00" -> callback.onSuccess(it)
-                else -> callback.onError(MpowerError(it))
+        MpowerClient().post(Mpower.oprChargeUrl, chargeRequest, OprChargeResponse::class.java, object : MpowerClient.ClientCallback<OprChargeResponse> {
+            override fun onResult(result: OprChargeResponse) {
+                when(result.response_code) {
+                    "00" -> callback.onSuccess(result)
+                    else -> callback.onError(MpowerError(result))
+                }
             }
-        }
+
+        })
     }
 
    data class Invoice(

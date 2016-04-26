@@ -11,6 +11,4 @@ class ApiKey {
 
     var token: String by Delegates.notNull()
 
-
-
 }

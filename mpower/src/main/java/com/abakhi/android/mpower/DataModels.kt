@@ -1,7 +1,5 @@
 package com.abakhi.android.mpower
 
-import kotlin.properties.Delegates
-
 
 data class MpowerItem(
         val name: String,

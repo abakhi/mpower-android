@@ -99,12 +99,15 @@ object Mpower {
                 mapOf(Pair("account_alias", payee), Pair("amount", amount))
         )
 
-        MpowerClient().post(directPayUrl, requestBody, DirectPayResponse::class.java)?.let {
-            when(it.response_code) {
-                "00" -> callback.onSuccess(it)
-                else -> callback.onError(MpowerError(it))
+        MpowerClient().post(directPayUrl, requestBody, DirectPayResponse::class.java, object : MpowerClient.ClientCallback<DirectPayResponse> {
+            override fun onResult(result: DirectPayResponse) {
+                when(result.response_code) {
+                    "00" -> callback.onSuccess(result)
+                    else -> callback.onError(MpowerError(result))
+                }
             }
-        }
+
+        })
 
     }
 
@@ -116,12 +119,15 @@ object Mpower {
             it.toJson(data)
         }
 
-        MpowerClient().post(directMobileUrl, requestBody, DirectMobileResponse::class.java)?.let {
-            when(it.response_code) {
-                "00" -> callback.onSuccess(it)
-                else -> callback.onError(MpowerError(it))
+        MpowerClient().post(directMobileUrl, requestBody, DirectMobileResponse::class.java, object : MpowerClient.ClientCallback<DirectMobileResponse> {
+            override fun onResult(result: DirectMobileResponse) {
+                when(result.response_code) {
+                    "00" -> callback.onSuccess(result)
+                    else -> callback.onError(MpowerError(result))
+                }
             }
-        }
+
+        })
 
     }
 
@@ -131,12 +137,15 @@ object Mpower {
 
         val requestBody = "{ \"token\": $token }"
 
-        MpowerClient().post(directMobileStatusUrl, requestBody, DirectMobileResponse::class.java)?.let {
-            when(it.response_code) {
-                "00" -> callback.onSuccess(it)
-                else -> callback.onError(MpowerError(it))
+        MpowerClient().post(directMobileStatusUrl, requestBody, DirectMobileResponse::class.java, object : MpowerClient.ClientCallback<DirectMobileResponse> {
+            override fun onResult(result: DirectMobileResponse) {
+                when(result.response_code) {
+                    "00" -> callback.onSuccess(result)
+                    else -> callback.onError(MpowerError(result))
+                }
             }
-        }
+
+        })
 
     }
 
