@@ -41,6 +41,7 @@ bintray {
     pkg {
         repo = 'maven'
         name = 'mpower'
+        userOrg = 'abakhi'
         desc = 'Android MPowerPayments API wrapper'
         websiteUrl = 'https://github.com/abakhi/mpower-android'
         vcsUrl = 'https://github.com/abakhi/mpower-android.git'
