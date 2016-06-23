@@ -31,7 +31,13 @@ artifacts {
 
 // Bintray
 Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
+try {
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+} catch (FileNotFoundException e) {
+    properties.setProperty("bintray.user", "")
+    properties.setProperty("bintray.apikey", "")
+    properties.setProperty("bintray.gpg.password", "")
+}
 
 bintray {
     user = properties.getProperty("bintray.user")
